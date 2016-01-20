@@ -52,6 +52,8 @@ public enum DropState: DropStatable {
 public final class Drop: UIView {
     static let PRESET_DURATION: NSTimeInterval = 4.0
     
+    static var applicationWindow: UIWindow?
+    
     private var statusLabel: UILabel!
     private let statusTopMargin: CGFloat = 10.0
     private let statusBottomMargin: CGFloat = 10.0
@@ -142,8 +144,8 @@ extension Drop {
     private class func show(status: String, state: DropStatable, duration: Double) {
         self.upAll()
         let drop = Drop(duration: duration)
-        UIApplication.sharedApplication().keyWindow?.addSubview(drop)
-        guard let window = drop.window else { return }
+        guard let window = applicationWindow ?? UIApplication.sharedApplication().keyWindow else { return }
+        window.addSubview(drop)
         
         let heightConstraint = NSLayoutConstraint(item: drop, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: 100.0)
         drop.addConstraint(heightConstraint)
@@ -191,7 +193,7 @@ extension Drop {
     }
     
     public class func upAll() {
-        guard let window = UIApplication.sharedApplication().keyWindow else { return }
+        guard let window = applicationWindow ?? UIApplication.sharedApplication().keyWindow else { return }
         for view in window.subviews {
             if let drop = view as? Drop {
                 drop.up()

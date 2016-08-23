@@ -6,12 +6,12 @@ SwiftyDrop is a lightweight pure Swift simple and beautiful dropdown message.
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Join the chat at https://gitter.im/morizotter/SwiftyDrop](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/morizotter/SwiftyDrop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-##Features
+## Features
 
 - Easy to use like: `Drop.down("Message")`
 - Message field expands depending on the message.
 
-##How it looks
+## How it looks
 
 ### States
 ![Default](misc/Default.png)
@@ -19,16 +19,20 @@ SwiftyDrop is a lightweight pure Swift simple and beautiful dropdown message.
 ![Warning](misc/Warning.png)
 ![Error](misc/Error.png)
 
-## Blurs
+### Blurs
 ![Light](misc/Light.png)
 ![Dark](misc/Dark.png)
 
-## iPad
+### iPad
 ![iPad](misc/iPadPortlait.png)
 
-##Runtime Requirements
+## Demo
 
-- iOS8.1 or later
+Git clone or download this repository and open  **SwiftyDrop.xcodeproj** . You can try SwiftyDrop in your Mac or iPhone.
+
+## Runtime Requirements
+
+- iOS8.0 or later
 - Xcode 7.0
 
 ## Installation and Setup
@@ -50,7 +54,7 @@ $ pods --version
 To integrate TouchVisualizer into your Xcode project using CocoaPods, specify it in your `Podfile` and run `pod install`.
 
 ```bash
-platform :ios, '8.1'
+platform :ios, '8.0'
 use_frameworks!
 pod 'SwiftyDrop', '~>2.0'
 ```
@@ -85,12 +89,11 @@ Drop.down("Message")
 
 It is really simple!
 
-### States and Blurs
+### States
 
-SwiftyDrop has states of display. You can customize looks by comforming `DropStatable` protocol.
-Examples are:
+SwiftyDrop has states of display.
 
-**States**
+**Examples**
 
 ```swift
 Drop.down("Message")
@@ -99,15 +102,10 @@ Drop.down("Message", state: .Color(.orangeColor()))
 Drop.down("Message", state: .Blur(.Light))
 ```
 
-**Duration**
-
-```swift
-Drop.down("Message", duration: 3.0)
-```
-
-You can change duration like this above. Default duration is 4.0.
-
 **Custom states**
+
+You can customize looks by comforming `DropStatable` protocol.
+Examples are:
 
 ```swift
 enum Custom: DropStatable {
@@ -148,9 +146,26 @@ Of course you can use class or struct to make custom state if it is comforming t
 - .Color: UIColor
 - .Blur: UIBlurEffectStyle
 
-##Contributing
+### Duration
 
-Please file issues or submit pull requests for anything you’d like to see! We're waiting! :)
+```swift
+Drop.down("Message", duration: 3.0)
+```
 
-##Licensing
+You can change duration like this above. Default duration is 4.0.
+
+### Action
+
+```swift
+Drop.down("Message") {
+    print("Action fired!")
+}
+```
+
+## Contribution
+
+Please file issues or submit pull requests! We're waiting! :)
+
+## License
+
 SwiftyDrop is released under the MIT license. Go read the LICENSE file for more information.

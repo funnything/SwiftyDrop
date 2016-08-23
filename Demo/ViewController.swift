@@ -14,7 +14,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         navigationController?.navigationBarHidden = true
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: "upAllDrops:")
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.upAllDrops(_:)))
         view.addGestureRecognizer(tapRecognizer)
     }
     
@@ -40,6 +40,14 @@ class ViewController: UIViewController {
             let b = CGFloat(arc4random_uniform(256))
             let color = UIColor(red: r/255.0, green: g/255.0, blue: b/255.0, alpha: 1.0)
             Drop.down(self.sampleText(), state: .Color(color))
+        }
+        let actionableAction = UIAlertAction(title: "Action", style: .Default) { [unowned self] action -> Void in
+            Drop.down(self.sampleText()) {
+                let action = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                let controller = UIAlertController(title: "Action", message: "Action fired!", preferredStyle: .Alert)
+                controller.addAction(action)
+                self.presentViewController(controller, animated: true, completion: nil)
+            }
         }
         let blurAction = UIAlertAction(title: "Blur", style: .Default) { [unowned self] action -> Void in
             Drop.down(self.sampleText(), state: .Blur(.Light))
@@ -76,7 +84,7 @@ class ViewController: UIViewController {
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
         
         let controller = UIAlertController(title: "Samples", message: "Select to show drop down message.", preferredStyle: .ActionSheet)
-        for action in [defaultAction, infoAction, successAction, warningAction, errorAction, colorAction, blurAction, customAction, durationAction, cancelAction] {
+        for action in [defaultAction, infoAction, successAction, warningAction, errorAction, colorAction, actionableAction, blurAction, customAction, durationAction, cancelAction] {
             controller.addAction(action)
         }
         showAlert(controller, sourceView: sender as? UIView)
@@ -121,7 +129,7 @@ class ViewController: UIViewController {
     func sampleText() -> String {
         let text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."
         let length = Int(arc4random_uniform(100)) + 10
-        let end = text.startIndex.advancedBy(length)
-        return text.substringWithRange(Range(start: text.startIndex, end: end))
+        let range = text.startIndex..<text.startIndex.advancedBy(length)
+        return text.substringWithRange(range)
     }
 }

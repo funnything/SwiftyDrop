@@ -49,6 +49,8 @@ public enum DropState: DropStatable {
     }
 }
 
+public typealias DropAction = () -> Void
+
 public final class Drop: UIView {
     static let PRESET_DURATION: NSTimeInterval = 4.0
     
@@ -65,10 +67,13 @@ public final class Drop: UIView {
     
     private var upTimer: NSTimer?
     private var startTop: CGFloat?
-    
-    convenience init(duration: Double) {
+
+    private var action: DropAction?
+
+    convenience init(duration: Double, action: DropAction?) {
         self.init(frame: CGRect.zero)
         self.duration = duration
+        self.action = action
         
         scheduleUpTimer(duration)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
@@ -133,27 +138,27 @@ public final class Drop: UIView {
 }
 
 extension Drop {
-    public class func down(status: String, state: DropState = .Default, duration: Double = Drop.PRESET_DURATION) {
-        show(status, state: state, duration: duration)
+    public class func down(status: String, state: DropState = .Default, duration: Double = Drop.PRESET_DURATION, action: DropAction? = nil) {
+        show(status, state: state, duration: duration, action: action)
     }
-    
-    public class func down<T: DropStatable>(status: String, state: T, duration: Double = Drop.PRESET_DURATION) {
-        show(status, state: state, duration: duration)
+
+    public class func down<T: DropStatable>(status: String, state: T, duration: Double = Drop.PRESET_DURATION, action: DropAction? = nil) {
+        show(status, state: state, duration: duration, action: action)
     }
-    
-    private class func show(status: String, state: DropStatable, duration: Double) {
+
+    private class func show(status: String, state: DropStatable, duration: Double, action: DropAction?) {
         self.upAll()
-        let drop = Drop(duration: duration)
-        guard let window = applicationWindow ?? UIApplication.sharedApplication().keyWindow else { return }
-        window.addSubview(drop)
-        
+        let drop = Drop(duration: duration, action: action)
+        UIApplication.sharedApplication().keyWindow?.addSubview(drop)
+        guard let window = drop.window else { return }
+
         let heightConstraint = NSLayoutConstraint(item: drop, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: 100.0)
         drop.addConstraint(heightConstraint)
         drop.heightConstraint = heightConstraint
-        
+
         let topConstraint = NSLayoutConstraint(item: drop, attribute: .Top, relatedBy: .Equal, toItem: window, attribute: .Top, multiplier: 1.0, constant: -heightConstraint.constant)
         drop.topConstraint = topConstraint
-        
+
         window.addConstraints(
             [
                 topConstraint,
@@ -161,10 +166,10 @@ extension Drop {
                 NSLayoutConstraint(item: drop, attribute: .Right, relatedBy: .Equal, toItem: window, attribute: .Right, multiplier: 1.0,constant: 0.0)
             ]
         )
-        
+
         drop.setup(status, state: state)
         drop.updateHeight()
-        
+
         topConstraint.constant = 0.0
         UIView.animateWithDuration(
             NSTimeInterval(0.25),
@@ -274,6 +279,7 @@ extension Drop {
 
 extension Drop {
     func up(sender: AnyObject) {
+        action?()
         self.up()
     }
     

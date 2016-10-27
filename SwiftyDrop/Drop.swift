@@ -149,7 +149,7 @@ extension Drop {
     private class func show(status: String, state: DropStatable, duration: Double, action: DropAction?) {
         self.upAll()
         let drop = Drop(duration: duration, action: action)
-        UIApplication.sharedApplication().keyWindow?.addSubview(drop)
+        (applicationWindow ?? UIApplication.sharedApplication().keyWindow)?.addSubview(drop)
         guard let window = drop.window else { return }
 
         let heightConstraint = NSLayoutConstraint(item: drop, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: 100.0)

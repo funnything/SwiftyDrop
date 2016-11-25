@@ -52,7 +52,7 @@ public enum DropState: DropStatable {
 public typealias DropAction = () -> Void
 
 public final class Drop: UIView {
-    static let PRESET_DURATION: TimeInterval = 4.0
+    public static let PRESET_DURATION: TimeInterval = 4.0
 
     public static var applicationWindow: UIWindow?
 

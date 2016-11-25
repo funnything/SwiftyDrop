@@ -53,7 +53,9 @@ public typealias DropAction = () -> Void
 
 public final class Drop: UIView {
     static let PRESET_DURATION: TimeInterval = 4.0
-    
+
+    public static var applicationWindow: UIWindow?
+
     fileprivate var statusLabel: UILabel!
     fileprivate let statusTopMargin: CGFloat = 10.0
     fileprivate let statusBottomMargin: CGFloat = 10.0
@@ -146,7 +148,7 @@ extension Drop {
     fileprivate class func show(_ status: String, state: DropStatable, duration: Double, action: DropAction?) {
         self.upAll()
         let drop = Drop(duration: duration)
-        UIApplication.shared.keyWindow?.addSubview(drop)
+        (applicationWindow ?? UIApplication.shared.keyWindow)?.addSubview(drop)
         guard let window = drop.window else { return }
 
         let heightConstraint = NSLayoutConstraint(item: drop, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1.0, constant: 100.0)
@@ -200,7 +202,7 @@ extension Drop {
     }
     
     public class func upAll() {
-        guard let window = UIApplication.shared.keyWindow else { return }
+        guard let window = applicationWindow ?? UIApplication.shared.keyWindow else { return }
         for view in window.subviews {
             if let drop = view as? Drop {
                 drop.up()
